@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import TiltCard from './TiltCard';
 import WordReveal from './WordReveal';
 import Magnetic from './Magnetic';
+import HeaderBackground from './HeaderBackground';
 
 export default function Header() {
     const containerVariants = {
@@ -37,48 +38,8 @@ export default function Header() {
             style={{ perspective: 1200 }}
             className="relative w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4 pt-20"
         >
-            {/* Floating 3D/Glassmorphic Background Shapes */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-                <motion.div
-                    animate={{
-                        y: [0, -20, 0],
-                        rotate: [0, 360],
-                        scale: [1, 1.05, 1],
-                    }}
-                    transition={{
-                        duration: 8,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                    className="absolute top-1/4 left-0 sm:-left-12 w-24 h-24 rounded-3xl bg-gradient-to-tr from-[#b820e6]/15 to-[#da7d20]/5 blur-sm border border-purple-500/10 backdrop-blur-md"
-                />
-                <motion.div
-                    animate={{
-                        y: [0, 25, 0],
-                        rotate: [360, 0],
-                        scale: [1, 0.95, 1],
-                    }}
-                    transition={{
-                        duration: 10,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 1,
-                    }}
-                    className="absolute bottom-1/4 right-0 sm:-right-12 w-32 h-32 rounded-full bg-gradient-to-br from-[#da7d20]/15 to-[#7c3aed]/5 blur-sm border border-orange-500/10 backdrop-blur-md"
-                />
-                <motion.div
-                    animate={{
-                        x: [0, 15, -15, 0],
-                        y: [0, -15, 15, 0],
-                    }}
-                    transition={{
-                        duration: 7,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                    className="absolute top-1/3 right-1/4 w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 blur-md"
-                />
-            </div>
+            {/* Interactive Modern Background Animation */}
+            <HeaderBackground />
 
             {/* Avatar image wrapped in 3D TiltCard */}
             <motion.div variants={itemVariants} className="w-32 h-32 mb-2 group relative">

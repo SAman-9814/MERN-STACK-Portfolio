@@ -17,35 +17,36 @@
 
 ## ✨ Overview
 
-A modern, fully responsive **personal developer portfolio** built with **React.js + Vite + Tailwind CSS**. Featuring dark/light mode, smooth animations, an AI-powered chatbot assistant (ARIA), live GitHub contribution graph, and a fully functional contact form.
+A modern, high-end **personal developer portfolio** built with **React.js + Vite + Tailwind CSS** and advanced web physics. It features gorgeous custom interactive graphics, light/dark themes, an AI-powered chatbot assistant (ARIA), a live GitHub contribution tracker, and a fully functional contact interface.
 
 ---
 
-## 🎯 Features
+## 🎯 Features & Interactive Animations
 
 | Feature | Description |
 |---|---|
-| 🌙 **Dark / Light Mode** | Smooth theme toggle with persistent preference |
-| 🤖 **ARIA Chatbot** | AI assistant with keyword-based smart replies |
-| 📊 **GitHub Stats** | Live contribution heatmap from GitHub API |
-| 📬 **Contact Form** | Powered by Web3Forms with toast notifications |
-| ✨ **Shimmer Animations** | Modern section headers with shimmer text effects |
-| 🎨 **Glassmorphism UI** | Premium dark glassmorphic design language |
-| 📱 **Fully Responsive** | Mobile-first design across all screen sizes |
-| ⚡ **Smooth Scroll** | Lenis smooth scroll integration |
-| 🔍 **SEO Optimized** | JSON-LD structured data + full meta tags |
+| ⏳ **Cybernetic Preloader** | Premium loading screen featuring high-tech dashboard dials, progress rings, and real-time scrambled matrix decryption text. |
+| 🌀 **Quantum Particle Core** | A Canvas-based 3D orbiting particle sphere inside the preloader that accelerates and contracts dynamically before exploding outward in a radial "supernova" at 100%. |
+| 🌊 **Liquid Wave Page Wipe** | Dual-layered SVG path-morph transition curtain that pulls up elastically on exit, exposing the site content with an organic fluid wave effect. |
+| 🕸️ **Gravitational Mesh Grid** | Interactive canvas grid lines that bend locally toward the cursor (magnetic warp) and ripple outwards dynamically when hit by gravitational pulses. |
+| ✨ **Header Starfield & Meteor Rain** | Immersive hero background with twinkling star arrays, passing shooting stars (meteors), reactive cursor node connections, and cursor spark trails. |
+| 🌙 **Dark / Light Mode** | Fluid theme toggle adjusting layout variables, canvas gradients, and typography colors automatically. |
+| 🤖 **ARIA Chatbot** | Smart float-in AI chatbot with custom responsive conversational triggers. |
+| 📊 **GitHub Heatmap** | Live contribution tracker matching GitHub's contributions graph in real-time. |
+| 📱 **Responsive & Smooth** | Fully responsive layout powered by Framer Motion entrance timings and Lenis smooth scrolling. |
 
 ---
 
 ## 🛠️ Tech Stack
 
 ```
-Frontend     →  React.js 18, Vite, Tailwind CSS
-Animations   →  Custom CSS Keyframes, Lenis Scroll
-Contact Form →  Web3Forms API
-GitHub Data  →  GitHub Contributions API + GitHub REST API
-Fonts        →  Google Fonts (Outfit, Ovo)
-Deployment   →  Vercel
+Frontend Core       →  React.js 18, Vite, Tailwind CSS
+Animations & Physics →  Framer Motion 12, HTML5 Canvas 2D, SVG Path Morphing
+Smooth Scroll       →  Lenis Scroll
+Contact Form API    →  Web3Forms API
+GitHub Stats        →  GitHub Contributions API + GitHub REST API
+Typography & Icons  →  Outfit, Ovo (Google Fonts), Lucide Icons
+Deployment          →  Vercel
 ```
 
 ---
@@ -55,26 +56,28 @@ Deployment   →  Vercel
 ```
 reactjs/
 ├── public/
-│   └── assets/          # Images, icons, resume PDF
+│   └── assets/          # Images, AI avatar, icons, resume PDF
 ├── src/
 │   ├── components/
-│   │   ├── Navbar.jsx       # Navigation + theme toggle
-│   │   ├── Header.jsx       # Hero section
-│   │   ├── About.jsx        # About section
-│   │   ├── Skills.jsx       # Tech skills grid
-│   │   ├── Experience.jsx   # Work & education timeline
-│   │   ├── Services.jsx     # Services offered
-│   │   ├── Work.jsx         # Project showcase
-│   │   ├── GithubStats.jsx  # Live GitHub heatmap
-│   │   ├── Contact.jsx      # Contact form + toast
-│   │   ├── Footer.jsx       # Footer with social links
-│   │   ├── Chatbot.jsx      # ARIA AI assistant
-│   │   └── LenisScroll.jsx  # Smooth scroll setup
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css            # Global animations & custom styles
-├── index.html               # SEO meta tags + JSON-LD schema
-├── tailwind.config.js
+│   │   ├── Preloader.jsx       # Cybernetic dial, 3D particle vortex, text decryptor & liquid curtain
+│   │   ├── HeaderBackground.jsx# Canvas starfields, shooting stars, mouse webs & click ripples
+│   │   ├── Navbar.jsx          # Desktop & mobile nav + theme toggle
+│   │   ├── Header.jsx          # Hero section (integrates HeaderBackground)
+│   │   ├── About.jsx           # About info with profile image card
+│   │   ├── Skills.jsx          # Interactive skills grid
+│   │   ├── Experience.jsx      # Work & education timelines
+│   │   ├── Services.jsx        # Cards showing service offerings
+│   │   ├── Work.jsx            # Project cards & detail overlays
+│   │   ├── GithubStats.jsx     # Live GitHub heatmap calendar
+│   │   ├── Contact.jsx         # Web3Forms contact form + status toasts
+│   │   ├── Footer.jsx          # Social links footer
+│   │   ├── Chatbot.jsx         # Conversational floating assistant (ARIA)
+│   │   └── LenisScroll.jsx     # Smooth scrolling wrapper
+│   ├── App.jsx                 # AnimationPresence page gate & routing lifecycle
+│   ├── main.jsx                # Render mount point
+│   └── index.css               # Global tailwind base & keyframe configs
+├── index.html                  # SEO head tags + JSON-LD structured data schema
+├── tailwind.config.js          # Palette mapping (including darkTheme variables)
 └── vite.config.js
 ```
 
@@ -119,23 +122,17 @@ npm run build
 2. Replace the `access_key` in `src/components/Contact.jsx`
 
 ### Social Links
-Update your links in:
-- `src/components/Footer.jsx` — GitHub, LinkedIn, WhatsApp
-- `src/components/Chatbot.jsx` — ARIA's FAQ answers
+Update links and information in:
+- `src/components/Footer.jsx` — GitHub, LinkedIn, WhatsApp handles
+- `src/components/Chatbot.jsx` — ARIA's responsive dialog facts
 
 ---
 
-## 📸 Sections
+## 🎨 Interactive Physics Settings (Developers)
 
-- **Hero** — Animated greeting with hand wave + resume download
-- **About** — Introduction with animated gradient-border profile image
-- **Skills** — Tech stack with icon grid
-- **Experience** — Work history with collapsible project details
-- **Services** — What I offer cards
-- **Projects** — Portfolio work showcase
-- **GitHub** — Live contribution heatmap + activity feed
-- **Contact** — Form with toast notification feedback
-- **ARIA** — Floating AI chatbot assistant
+If you'd like to adjust the visual densities, speeds, or thresholds of the canvas animations:
+- **Preloader Particles & Grid**: Tweak values inside `useEffect` in [Preloader.jsx](file:///d:/aman-sah-portfolio-main/aman-sah-portfolio-main/reactjs/src/components/Preloader.jsx) (e.g., `particleCount`, `gridSpacing`, `warpStrength`, `ripples`).
+- **Header Particle Density & Speed**: Tweak arrays in [HeaderBackground.jsx](file:///d:/aman-sah-portfolio-main/aman-sah-portfolio-main/reactjs/src/components/HeaderBackground.jsx) (e.g., `starCount`, `meteorSpawnRate`, `friction`, `connectionRadius`).
 
 ---
 
