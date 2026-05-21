@@ -6,7 +6,7 @@
 
 **Full Stack & AI Engineer | Kathmandu, Nepal 🇳🇵**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Portfolio-b820e6?style=for-the-badge)](https://aman-sah-portfolio.vercel.app)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Portfolio-b820e6?style=for-the-badge)](https://www.amansah.com.np)
 [![GitHub](https://img.shields.io/badge/GitHub-SAman--9814-181717?style=for-the-badge&logo=github)](https://github.com/SAman-9814)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Aman_Sah-0077B5?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/aman-sah9814)
 [![Email](https://img.shields.io/badge/Email-sah99017@gmail.com-EA4335?style=for-the-badge&logo=gmail)](mailto:sah99017@gmail.com)
