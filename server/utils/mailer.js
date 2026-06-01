@@ -38,7 +38,7 @@ export const sendContactEmail = async (name, email, message) => {
     html: `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
         <div style="text-align: center; margin-bottom: 24px;">
-          <a href="https://www.amansah.com.np" target="_blank" rel="noreferrer" style="text-decoration: none;"><span style="font-size: 24px; font-weight: 700; background: linear-gradient(to right, #b820e6, #da7d20); color: #b820e6; letter-spacing: -0.5px;">aman.dev</span></a>
+          <a href="https://www.amansah.com.np" target="_blank" rel="noreferrer" style="text-decoration: none; font-size: 24px; font-weight: 700; color: #b820e6; letter-spacing: -0.5px; background: linear-gradient(to right, #b820e6, #da7d20); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">aman.dev</a>
         </div>
         <h2 style="color: #1e293b; font-size: 20px; font-weight: 600; margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; font-family: 'Segoe UI', sans-serif;">New Message Received</h2>
         <div style="margin-top: 20px;">
@@ -93,7 +93,7 @@ export const sendThankYouEmail = async (name, email) => {
     html: `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
         <div style="text-align: center; margin-bottom: 24px;">
-          <a href="https://www.amansah.com.np" target="_blank" rel="noreferrer" style="text-decoration: none;"><span style="font-size: 24px; font-weight: 700; background: linear-gradient(to right, #b820e6, #da7d20); color: #b820e6; letter-spacing: -0.5px;">aman.dev</span></a>
+          <a href="https://www.amansah.com.np" target="_blank" rel="noreferrer" style="text-decoration: none; font-size: 24px; font-weight: 700; color: #b820e6; letter-spacing: -0.5px; background: linear-gradient(to right, #b820e6, #da7d20); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">aman.dev</a>
         </div>
         <h2 style="color: #1e293b; font-size: 20px; font-weight: 600; margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; font-family: 'Segoe UI', sans-serif;">Thank You for Reaching Out</h2>
         <div style="margin-top: 20px; color: #334155; font-size: 15px; line-height: 1.6;">
