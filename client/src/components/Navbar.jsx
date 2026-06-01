@@ -11,6 +11,7 @@ export default function Navbar({ onLoginClick }) {
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isDark, setIsDark] = useState(false);
+    const [scrollProgress, setScrollProgress] = useState(0);
 
     useEffect(() => {
         setIsLoggedIn(!!localStorage.getItem('adminToken'));
@@ -42,6 +43,10 @@ export default function Navbar({ onLoginClick }) {
                     navLinkRef.current.classList.add('bg-white', 'shadow-sm', 'bg-opacity-50', 'dark:border', 'dark:border-white/30', "dark:bg-transparent");
                 }
             }
+            // Scroll progress bar
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            setScrollProgress(docHeight > 0 ? (scrollTop / docHeight) * 100 : 0);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -116,10 +121,10 @@ export default function Navbar({ onLoginClick }) {
                             <AnimatePresence mode="wait" initial={false}>
                                 <motion.div
                                     key={isDark ? "dark" : "light"}
-                                    initial={{ y: -20, opacity: 0, rotate: -40 }}
-                                    animate={{ y: 0, opacity: 1, rotate: 0 }}
-                                    exit={{ y: 20, opacity: 0, rotate: 40 }}
-                                    transition={{ duration: 0.2 }}
+                                    initial={{ rotate: -90, scale: 0, opacity: 0 }}
+                                    animate={{ rotate: 0, scale: 1, opacity: 1 }}
+                                    exit={{ rotate: 90, scale: 0, opacity: 0 }}
+                                    transition={{ duration: 0.25, ease: 'easeInOut' }}
                                 >
                                     {isDark ? (
                                         <img src="./assets/sun_icon.png" alt="Sun" className="w-5" />
@@ -184,6 +189,16 @@ export default function Navbar({ onLoginClick }) {
                         )}
                     </li>
                 </ul>
+                {/* Gradient Scroll Progress Bar */}
+                <motion.div
+                    className="absolute bottom-0 left-0 h-[2px] rounded-full"
+                    style={{
+                        width: `${scrollProgress}%`,
+                        background: 'linear-gradient(to right, #b820e6, #da7d20)',
+                        opacity: scrollProgress > 0 ? 1 : 0,
+                    }}
+                    transition={{ ease: 'linear' }}
+                />
             </nav>
         </>
     )
