@@ -11,7 +11,7 @@ export const getProjects = async (req, res) => {
 };
 
 export const createProject = async (req, res) => {
-  const { title, description, techStack, github, live, image } = req.body;
+  const { title, description, techStack, github, live, image, isPinned } = req.body;
 
   if (!title || !description || !techStack) {
     return res.status(400).json({ message: 'Title, description, and tech stack are required' });
