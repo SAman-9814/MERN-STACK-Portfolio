@@ -19,15 +19,34 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
+// CORS — allow local dev and all production Vercel deployments
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  /\.vercel\.app$/,           // any *.vercel.app subdomain
+  /^https:\/\/www\.amansah\.com\.np$/, // custom domain
+];
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow server-to-server / curl (no Origin header) and whitelisted origins
+    if (!origin) return callback(null, true);
+    const allowed = allowedOrigins.some(o =>
+      typeof o === 'string' ? o === origin : o.test(origin)
+    );
+    if (allowed) return callback(null, true);
+    callback(new Error(`CORS: origin "${origin}" not allowed`));
+  },
+  credentials: true,
+}));
+
 // Standard Middlewares
-app.use(cors());
 app.use(express.json());
 
 // Serve static uploads folder at /api/uploads
 app.use('/api/uploads', express.static(uploadDir));
 
-// Connect to Database & seed admin
-connectDB();
+// Ensure DB is connected before handling any request (critical for Vercel cold starts)
+await connectDB();
 
 // Rate limiting for public Contact Form submissions
 const contactLimiter = rateLimit({

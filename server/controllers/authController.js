@@ -1,5 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import { connectDB } from '../config/db.js';
 import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
@@ -12,6 +14,11 @@ export const login = async (req, res) => {
   }
 
   try {
+    // Ensure DB is connected (guard for Vercel serverless cold starts)
+    if (mongoose.connection.readyState < 1) {
+      await connectDB();
+    }
+
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password' });
@@ -32,11 +39,7 @@ export const login = async (req, res) => {
     res.json({ token, username: user.username });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ 
-      message: 'Server error during login',
-      error: error.message,
-      stack: error.stack
-    });
+    res.status(500).json({ message: 'Server error during login' });
   }
 };
 
