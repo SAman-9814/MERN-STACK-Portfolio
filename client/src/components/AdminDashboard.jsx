@@ -500,7 +500,7 @@ export default function AdminDashboard() {
                 )}
             </AnimatePresence>
 
-            <div className="min-h-screen w-full bg-rose-50/30 dark:bg-darkTheme text-gray-800 dark:text-white font-Ovo relative pb-12 transition-colors duration-300">
+            <div className="min-h-screen w-full bg-rose-50/30 dark:bg-darkTheme text-gray-800 dark:text-white font-Ovo relative pb-12 transition-colors duration-300 overflow-x-hidden">
                 {/* Background ambient lights */}
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-900/5 dark:bg-purple-900/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#da7d20]/5 dark:bg-orange-950/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
@@ -541,7 +541,7 @@ export default function AdminDashboard() {
                     </div>
                 </header>
 
-                <main className="max-w-7xl mx-auto px-6 py-10 relative z-10">
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 relative z-10 overflow-hidden">
                     {/* Dashboard Stats Panel */}
                     <motion.div 
                         variants={containerVariants}
@@ -596,7 +596,7 @@ export default function AdminDashboard() {
                             initial={{ opacity: 0, x: -25 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.15 }}
-                            className="lg:col-span-5 flex flex-col gap-8 min-w-0"
+                            className="lg:col-span-5 flex flex-col gap-8"
                         >
                             <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-md transition-colors duration-300">
                                 <h2 className="text-xl font-semibold font-Outfit mb-6 text-[#b820e6] dark:text-purple-400">
@@ -863,9 +863,9 @@ export default function AdminDashboard() {
                             initial={{ opacity: 0, x: 25 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.25 }}
-                            className="lg:col-span-7 min-w-0"
+                            className="lg:col-span-7"
                         >
-                            <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-md transition-colors duration-300">
+                            <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-md transition-colors duration-300 flex flex-col" style={{ minHeight: 0 }}>
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                                     <h2 className="text-xl font-semibold font-Outfit text-[#da7d20] dark:text-orange-400">
                                         📂 Active Database Projects ({totalProjects})
@@ -904,7 +904,7 @@ export default function AdminDashboard() {
                                         </p>
                                     </div>
                                 ) : (
-                                    <motion.div layout className="space-y-4">
+                                    <motion.div layout className="space-y-4 overflow-y-auto max-h-[70vh] pr-1 scrollbar-thin">
                                         <AnimatePresence mode="popLayout">
                                             {filteredProjects.map((project) => (
                                                 <motion.div
@@ -923,8 +923,8 @@ export default function AdminDashboard() {
                                                         style={{ backgroundImage: `url('${cleanImagePath(project.image) || '/assets/work-1.png'}')` }}
                                                     />
 
-                                                    <div className="flex-grow flex flex-col justify-between">
-                                                        <div>
+                                                    <div className="flex-grow flex flex-col justify-between min-w-0">
+                                                            <div className="min-w-0">
                                                             <h3 className="font-semibold text-gray-800 dark:text-white text-base tracking-wide">{project.title}</h3>
                                                             <p className="text-xs text-gray-600 dark:text-white/60 mt-1 line-clamp-2 leading-relaxed">{project.description}</p>
                                                             <div className="flex flex-wrap gap-1 mt-2">
