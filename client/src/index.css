@@ -177,8 +177,4 @@
         cursor: none !important;
     }
 }
-
-/* Smooth global background & text transitions for theme toggles */
-html, body, section, footer, nav, p, h1, h2, h3, h4, h5, h6, input, textarea, select {
-    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out;
-}
+

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Magnetic from './Magnetic'
 
@@ -11,7 +11,6 @@ export default function Navbar({ onLoginClick }) {
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isDark, setIsDark] = useState(false);
-    const [scrollProgress, setScrollProgress] = useState(0);
 
     useEffect(() => {
         setIsLoggedIn(!!localStorage.getItem('adminToken'));
@@ -43,10 +42,6 @@ export default function Navbar({ onLoginClick }) {
                     navLinkRef.current.classList.add('bg-white', 'shadow-sm', 'bg-opacity-50', 'dark:border', 'dark:border-white/30', "dark:bg-transparent");
                 }
             }
-            // Scroll progress bar
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            setScrollProgress(docHeight > 0 ? (scrollTop / docHeight) * 100 : 0);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -117,22 +112,12 @@ export default function Navbar({ onLoginClick }) {
 
                 <div className="flex items-center gap-1">
                     <Magnetic range={0.4}>
-                        <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors relative overflow-hidden w-9 h-9 flex items-center justify-center">
-                            <AnimatePresence mode="wait" initial={false}>
-                                <motion.div
-                                    key={isDark ? "dark" : "light"}
-                                    initial={{ rotate: -90, scale: 0, opacity: 0 }}
-                                    animate={{ rotate: 0, scale: 1, opacity: 1 }}
-                                    exit={{ rotate: 90, scale: 0, opacity: 0 }}
-                                    transition={{ duration: 0.25, ease: 'easeInOut' }}
-                                >
-                                    {isDark ? (
-                                        <img src="./assets/sun_icon.png" alt="Sun" className="w-5" />
-                                    ) : (
-                                        <img src="./assets/moon_icon.png" alt="Moon" className="w-5" />
-                                    )}
-                                </motion.div>
-                            </AnimatePresence>
+                        <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors w-9 h-9 flex items-center justify-center">
+                            {isDark ? (
+                                <img src="./assets/sun_icon.png" alt="Sun" className="w-5" />
+                            ) : (
+                                <img src="./assets/moon_icon.png" alt="Moon" className="w-5" />
+                            )}
                         </button>
                     </Magnetic>
 
@@ -189,16 +174,6 @@ export default function Navbar({ onLoginClick }) {
                         )}
                     </li>
                 </ul>
-                {/* Gradient Scroll Progress Bar */}
-                <motion.div
-                    className="absolute bottom-0 left-0 h-[2px] rounded-full"
-                    style={{
-                        width: `${scrollProgress}%`,
-                        background: 'linear-gradient(to right, #b820e6, #da7d20)',
-                        opacity: scrollProgress > 0 ? 1 : 0,
-                    }}
-                    transition={{ ease: 'linear' }}
-                />
             </nav>
         </>
     )
