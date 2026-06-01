@@ -43,7 +43,14 @@ app.use('/api/uploads', uploadRoutes);
 app.use('/api/contact', contactLimiter, contactRoutes);
 app.use('/api/chat', chatRoutes);
 
+// Default Route
+app.get("/", (req, res) => {
+  res.send(`<h1>This is Aman Sah</h1>`);
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+export default app;
