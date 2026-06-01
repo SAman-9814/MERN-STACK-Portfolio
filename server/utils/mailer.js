@@ -85,17 +85,11 @@ export const sendThankYouEmail = async (name, email) => {
     return { success: false, error: 'Email credentials not configured.' };
   }
 
-  // Avatar served from the live frontend public URL
-  // (local file path won't work in Vercel serverless — client is a separate deployment)
-  const avatarUrl = process.env.FRONTEND_URL
-    ? `${process.env.FRONTEND_URL}/assets/aman-ai-avatar.png`
-    : 'https://www.amansah.com.np/assets/aman-ai-avatar.png';
-
   const mailOptions = {
     from: `"Aman Sah" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: `Thank you for reaching out!`,
-    text: `Hi ${name},\n\nThank you for contacting me. I have received your message and will get back to you as soon as possible.\n\nBest regards,\nAman Sah`,
+    text: `Hi ${name},\n\nThank you for contacting me. I have received your message and will get back to you as soon as possible.\n\nBest regards,\nAman Sah\nFull Stack & AI Engineer`,
     html: `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
         <div style="text-align: center; margin-bottom: 24px;">
@@ -107,18 +101,10 @@ export const sendThankYouEmail = async (name, email) => {
           <p>Thank you for visiting my website and sending a message. I've successfully received your submission and will read through it shortly.</p>
           <p>I aim to respond to all inquiries within 24 to 48 hours. In the meantime, feel free to check out my latest works or connect with me via social channels.</p>
           
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
-            <table style="border-collapse: collapse;">
-              <tr>
-                <td style="padding-right: 12px; vertical-align: middle;">
-                  <img src="${avatarUrl}" alt="Aman Sah" style="width: 48px; height: 48px; border-radius: 24px; display: block; border: 2px solid #b820e6;" />
-                </td>
-                <td style="vertical-align: middle;">
-                  <p style="margin: 0; font-size: 15px; font-weight: 700; color: #b820e6; line-height: 1.2;">Aman Sah</p>
-                  <p style="margin: 2px 0 0 0; font-size: 13px; color: #64748b; line-height: 1.2;">Full Stack &amp; AI Engineer</p>
-                </td>
-              </tr>
-            </table>
+          <div style="margin-top: 30px; padding: 16px 20px; background: linear-gradient(135deg, #f9f0ff, #fff7ed); border-left: 4px solid #b820e6; border-radius: 8px;">
+            <p style="margin: 0; font-size: 15px; font-weight: 700; color: #b820e6; line-height: 1.3;">Aman Sah</p>
+            <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b; line-height: 1.3;">Full Stack &amp; AI Engineer</p>
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #94a3b8;">sah99017@gmail.com &nbsp;|&nbsp; Kathmandu, Nepal</p>
           </div>
         </div>
         <div style="margin-top: 35px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center;">
