@@ -1,10 +1,15 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import { resolveFromRoot } from '../utils/path.js';
 
-// Ensure uploads directory exists at reactjs/server/uploads
-const uploadDir = resolveFromRoot('uploads');
+// Use writable os.tmpdir() on Vercel, or local folder in development
+const isVercel = !!process.env.VERCEL;
+const uploadDir = isVercel 
+  ? path.join(os.tmpdir(), 'uploads')
+  : resolveFromRoot('uploads');
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
