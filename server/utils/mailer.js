@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import { resolveFromRoot } from './path.js';
 
 dotenv.config();
 
@@ -86,7 +85,11 @@ export const sendThankYouEmail = async (name, email) => {
     return { success: false, error: 'Email credentials not configured.' };
   }
 
-  const avatarPath = resolveFromRoot('../client/public/assets/aman-ai-avatar.png');
+  // Avatar served from the live frontend public URL
+  // (local file path won't work in Vercel serverless — client is a separate deployment)
+  const avatarUrl = process.env.FRONTEND_URL
+    ? `${process.env.FRONTEND_URL}/assets/aman-ai-avatar.png`
+    : 'https://www.amansah.com.np/assets/aman-ai-avatar.png';
 
   const mailOptions = {
     from: `"Aman Sah" <${process.env.EMAIL_USER}>`,
@@ -108,12 +111,11 @@ export const sendThankYouEmail = async (name, email) => {
             <table style="border-collapse: collapse;">
               <tr>
                 <td style="padding-right: 12px; vertical-align: middle;">
-                  <img src="cid:aman-avatar" alt="Aman Sah" style="width: 48px; height: 48px; border-radius: 24px; display: block; border: 2px solid #b820e6;" />
+                  <img src="${avatarUrl}" alt="Aman Sah" style="width: 48px; height: 48px; border-radius: 24px; display: block; border: 2px solid #b820e6;" />
                 </td>
                 <td style="vertical-align: middle;">
                   <p style="margin: 0; font-size: 15px; font-weight: 700; color: #b820e6; line-height: 1.2;">Aman Sah</p>
-                  <p style="margin: 2px 0 0 0; font-size: 13px; color: #64748b; line-height: 1.2;">Full Stack &
-                    AI Engineer</p>
+                  <p style="margin: 2px 0 0 0; font-size: 13px; color: #64748b; line-height: 1.2;">Full Stack &amp; AI Engineer</p>
                 </td>
               </tr>
             </table>
@@ -123,14 +125,7 @@ export const sendThankYouEmail = async (name, email) => {
           <p style="font-size: 11px; color: #94a3b8; margin: 0;">This is an automated receipt confirming your submission. Please do not reply to this email directly.</p>
         </div>
       </div>
-    `,
-    attachments: [
-      {
-        filename: 'aman-ai-avatar.png',
-        path: avatarPath,
-        cid: 'aman-avatar'
-      }
-    ]
+    `
   };
 
   try {
