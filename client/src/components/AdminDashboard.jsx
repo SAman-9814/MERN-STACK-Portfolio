@@ -86,6 +86,7 @@ export default function AdminDashboard() {
     const [github, setGithub] = useState('');
     const [live, setLive] = useState('');
     const [image, setImage] = useState('');
+    const [isPinned, setIsPinned] = useState(false);
     const [imageMode, setImageMode] = useState('upload'); // 'upload' | 'url'
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState('');
@@ -220,6 +221,7 @@ export default function AdminDashboard() {
         setGithub('');
         setLive('');
         setImage('');
+        setIsPinned(false);
         setSelectedFile(null);
         setFilePreview('');
         setImageMode('upload');
@@ -285,7 +287,8 @@ export default function AdminDashboard() {
             techStack: techTags,
             github,
             live,
-            image: finalImageUrl
+            image: finalImageUrl,
+            isPinned
         };
 
         try {
@@ -319,6 +322,7 @@ export default function AdminDashboard() {
         setGithub(project.github);
         setLive(project.live);
         setImage(project.image);
+        setIsPinned(project.isPinned || false);
         
         // Dynamically toggle input mode based on previous image URL
         if (project.image && !project.image.startsWith('/api/uploads/')) {
@@ -329,6 +333,23 @@ export default function AdminDashboard() {
         setSelectedFile(null);
         setFilePreview('');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Handle instant pin toggle (no full edit needed)
+    const handleTogglePin = async (project) => {
+        try {
+            const response = await axios.patch(`/api/projects/${project._id}/pin`);
+            setProjects(prev =>
+                [...prev.map(p => p._id === project._id ? response.data : p)]
+                    .sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
+            );
+            showToast(
+                response.data.isPinned ? '📌 Project pinned to top!' : 'Project unpinned.',
+                'success'
+            );
+        } catch (err) {
+            showToast('Failed to toggle pin.', 'error');
+        }
     };
 
     // Handle Delete confirmed action
@@ -791,6 +812,28 @@ export default function AdminDashboard() {
                                         </AnimatePresence>
                                     </div>
 
+                                    {/* Pin Toggle */}
+                                    <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/20">
+                                        <div className="flex items-center gap-2.5">
+                                            <span className="text-amber-500 text-base">📌</span>
+                                            <div>
+                                                <p className="text-xs font-semibold text-gray-800 dark:text-white">Pin to Top</p>
+                                                <p className="text-[10px] text-gray-500 dark:text-white/40">Pinned projects appear first on the portfolio</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsPinned(p => !p)}
+                                            className={`relative w-11 h-6 rounded-full transition-all duration-300 focus:outline-none ${
+                                                isPinned
+                                                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.4)]'
+                                                    : 'bg-gray-200 dark:bg-white/10'
+                                            }`}
+                                        >
+                                            <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300 ${isPinned ? 'translate-x-5' : 'translate-x-0'}`} />
+                                        </button>
+                                    </div>
+
                                     <div className="flex gap-3 pt-2">
                                         <motion.button
                                             whileHover={{ scale: 1.015 }}
@@ -915,7 +958,11 @@ export default function AdminDashboard() {
                                                     exit={{ opacity: 0, scale: 0.95 }}
                                                     whileHover={{ x: 6, boxShadow: "0 6px 20px rgba(0,0,0,0.03)" }}
                                                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                                    className="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-gray-200/60 dark:border-white/5 bg-gray-50 dark:bg-[#11001F]/30 hover:bg-[#fcf4ff] dark:hover:bg-[#11001F]/60 transition-all duration-300"
+                                                    className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl border transition-all duration-300 ${
+                                                        project.isPinned
+                                                            ? 'border-amber-400/50 dark:border-amber-400/30 bg-amber-50/60 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10'
+                                                            : 'border-gray-200/60 dark:border-white/5 bg-gray-50 dark:bg-[#11001F]/30 hover:bg-[#fcf4ff] dark:hover:bg-[#11001F]/60'
+                                                    }`}
                                                 >
                                                     {/* Preview image */}
                                                     <div
@@ -925,7 +972,14 @@ export default function AdminDashboard() {
 
                                                     <div className="flex-grow flex flex-col justify-between min-w-0">
                                                             <div className="min-w-0">
-                                                            <h3 className="font-semibold text-gray-800 dark:text-white text-base tracking-wide">{project.title}</h3>
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <h3 className="font-semibold text-gray-800 dark:text-white text-base tracking-wide truncate">{project.title}</h3>
+                                                                {project.isPinned && (
+                                                                    <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                                                                        📌 Pinned
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                             <p className="text-xs text-gray-600 dark:text-white/60 mt-1 line-clamp-2 leading-relaxed">{project.description}</p>
                                                             <div className="flex flex-wrap gap-1 mt-2">
                                                                 {project.techStack.map((tech, i) => (
@@ -936,19 +990,34 @@ export default function AdminDashboard() {
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex gap-4 mt-4 pt-3 border-t border-gray-200/50 dark:border-white/5 justify-end">
-                                                            <button
-                                                                onClick={() => handleEdit(project)}
-                                                                className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-semibold transition"
+                                                        <div className="flex gap-4 mt-4 pt-3 border-t border-gray-200/50 dark:border-white/5 items-center justify-between">
+                                                            <motion.button
+                                                                whileTap={{ scale: 0.85 }}
+                                                                onClick={() => handleTogglePin(project)}
+                                                                title={project.isPinned ? 'Unpin project' : 'Pin to top'}
+                                                                className={`flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all duration-200 ${
+                                                                    project.isPinned
+                                                                        ? 'bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-500/25'
+                                                                        : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-white/40 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:text-amber-500'
+                                                                }`}
                                                             >
-                                                                Edit Project
-                                                            </button>
-                                                            <button
-                                                                onClick={() => setDeleteConfirmId(project._id)}
-                                                                className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-semibold transition"
-                                                            >
-                                                                Delete Project
-                                                            </button>
+                                                                <span className={project.isPinned ? 'text-amber-500' : ''}>📌</span>
+                                                                {project.isPinned ? 'Unpin' : 'Pin'}
+                                                            </motion.button>
+                                                            <div className="flex gap-4">
+                                                                <button
+                                                                    onClick={() => handleEdit(project)}
+                                                                    className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-semibold transition"
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => setDeleteConfirmId(project._id)}
+                                                                    className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-semibold transition"
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </motion.div>

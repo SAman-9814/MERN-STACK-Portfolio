@@ -25,6 +25,10 @@ const projectSchema = new mongoose.Schema({
   image: {
     type: String,
     default: '',
+  },
+  isPinned: {
+    type: Boolean,
+    default: false,
   }
 }, {
   timestamps: true

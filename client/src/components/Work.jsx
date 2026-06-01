@@ -58,7 +58,9 @@ export default function Work() {
             try {
                 const response = await axios.get('/api/projects');
                 if (response.data && response.data.length > 0) {
-                    setProjects(response.data);
+                    // Pinned projects float to the top (mirrors DB sort)
+                    const sorted = [...response.data].sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
+                    setProjects(sorted);
                 } else {
                     setProjects(fallbackProjects);
                 }

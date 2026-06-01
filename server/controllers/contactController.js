@@ -22,7 +22,7 @@ export const handleContactSubmit = async (req, res) => {
     try {
       await sendThankYouEmail(name, email);
     } catch (thankYouError) {
-      console.error('Failed to send thank you email to', email, ':', thankYouError?.message || thankYouError);
+      console.error('Failed to send thank you confirmation email:', thankYouError);
     }
 
     res.status(200).json({

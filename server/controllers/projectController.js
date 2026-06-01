@@ -2,7 +2,7 @@ import Project from '../models/Project.js';
 
 export const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 });
+    const projects = await Project.find().sort({ isPinned: -1, createdAt: -1 });
     res.json(projects);
   } catch (error) {
     console.error('Error fetching projects:', error);
@@ -24,7 +24,8 @@ export const createProject = async (req, res) => {
       techStack: Array.isArray(techStack) ? techStack : techStack.split(',').map(s => s.trim()).filter(Boolean),
       github: github || '',
       live: live || '',
-      image: image || ''
+      image: image || '',
+      isPinned: isPinned === true || isPinned === 'true'
     });
 
     const savedProject = await newProject.save();
@@ -36,7 +37,7 @@ export const createProject = async (req, res) => {
 };
 
 export const updateProject = async (req, res) => {
-  const { title, description, techStack, github, live, image } = req.body;
+  const { title, description, techStack, github, live, image, isPinned } = req.body;
 
   try {
     const updateData = {};
@@ -48,6 +49,7 @@ export const updateProject = async (req, res) => {
     if (github !== undefined) updateData.github = github;
     if (live !== undefined) updateData.live = live;
     if (image !== undefined) updateData.image = image;
+    if (isPinned !== undefined) updateData.isPinned = isPinned === true || isPinned === 'true';
 
     const updatedProject = await Project.findByIdAndUpdate(
       req.params.id,
@@ -76,5 +78,20 @@ export const deleteProject = async (req, res) => {
   } catch (error) {
     console.error('Error deleting project:', error);
     res.status(500).json({ message: 'Error deleting project' });
+  }
+};
+
+export const togglePinProject = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+    project.isPinned = !project.isPinned;
+    await project.save();
+    res.json(project);
+  } catch (error) {
+    console.error('Error toggling pin:', error);
+    res.status(500).json({ message: 'Error toggling pin status' });
   }
 };
