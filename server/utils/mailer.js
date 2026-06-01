@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Create transporter
-const transporter = nodemailer.createTransport({
+// Lazy transporter factory — always reads env vars at call time (critical for Vercel)
+const createTransporter = () => nodemailer.createTransport({
   host: process.env.EMAIL_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.EMAIL_PORT || '587', 10),
-  secure: process.env.EMAIL_PORT === '465', // true for 465, false for other ports
+  secure: process.env.EMAIL_PORT === '465',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -65,6 +65,7 @@ export const sendContactEmail = async (name, email, message) => {
   };
 
   try {
+    const transporter = createTransporter();
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully:', info.messageId);
     return { success: true, messageId: info.messageId };
@@ -115,6 +116,7 @@ export const sendThankYouEmail = async (name, email) => {
   };
 
   try {
+    const transporter = createTransporter();
     const info = await transporter.sendMail(mailOptions);
     console.log('Thank you email sent successfully:', info.messageId);
     return { success: true, messageId: info.messageId };

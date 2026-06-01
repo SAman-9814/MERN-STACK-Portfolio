@@ -22,8 +22,7 @@ export const handleContactSubmit = async (req, res) => {
     try {
       await sendThankYouEmail(name, email);
     } catch (thankYouError) {
-      // Non-fatal: owner email already sent. Log full detail for debugging.
-      console.error('Failed to send thank you email to sender:', thankYouError?.message || thankYouError);
+      console.error('Failed to send thank you email to', email, ':', thankYouError?.message || thankYouError);
     }
 
     res.status(200).json({
