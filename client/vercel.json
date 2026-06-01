@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://your-backend-domain.vercel.app/api/:path*"
+      "destination": "https://mern-stack-portfolio-delta.vercel.app/api/:path*"
     }
   ]
 }
