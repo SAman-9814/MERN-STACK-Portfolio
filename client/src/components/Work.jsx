@@ -117,11 +117,16 @@ export default function Work() {
                         <div key={idx} className="h-full">
                             <ScrollReveal3D delay={0.1 * idx} className="h-full">
                                 <TiltCard
-                                    glowColor="rgba(184, 32, 230, 0.2)"
-                                    className="flex flex-col bg-white dark:bg-white/5 border border-gray-300 dark:border-white/20 rounded-2xl font-Ovo h-full overflow-hidden"
+                                    glowColor={project.isPinned ? "rgba(245, 158, 11, 0.3)" : "rgba(184, 32, 230, 0.2)"}
+                                    className={`flex flex-col bg-white dark:bg-white/5 border ${project.isPinned ? 'border-amber-300/60 dark:border-amber-500/30' : 'border-gray-300 dark:border-white/20'} rounded-2xl font-Ovo h-full overflow-hidden`}
                                 >
                                     <div className="relative w-full h-36 border-b border-gray-200 dark:border-white/10 overflow-hidden group">
                                         <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: `url(${getOptimizedImageUrl(project.image)})` }}></div>
+                                        {project.isPinned && (
+                                            <div className="absolute top-3 left-3 bg-white/95 dark:bg-[#11001F]/90 backdrop-blur-md border border-amber-200 dark:border-amber-500/30 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                                                <span>📌</span> Featured
+                                            </div>
+                                        )}
                                     </div>
                                     
                                     <div className="p-5 flex flex-col flex-grow">
