@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion';
 import axios from 'axios';
 import Magnetic from './Magnetic';
 import CustomCursor from './CustomCursor';
@@ -65,12 +65,109 @@ const compressImage = (file) => {
     });
 };
 
+const cleanImagePath = (path) => path;
+
+const ProjectReorderItem = ({ project, searchQuery, handleEdit, setDeleteConfirmId, handleTogglePin }) => {
+    const controls = useDragControls();
+
+    return (
+        <Reorder.Item
+            value={project}
+            dragListener={false} // Disable entire card dragging to allow touch scrolling on mobile
+            dragControls={controls}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            whileHover={{ x: 6, boxShadow: "0 6px 20px rgba(0,0,0,0.03)" }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl border transition-all duration-300 relative ${
+                project.isPinned
+                    ? 'border-amber-400/50 dark:border-amber-400/30 bg-amber-50/60 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10'
+                    : 'border-gray-200/60 dark:border-white/5 bg-gray-50 dark:bg-[#11001F]/30 hover:bg-[#fcf4ff] dark:hover:bg-[#11001F]/60'
+            }`}
+        >
+            {/* Drag Handle (Visible on mobile too) */}
+            {!searchQuery && (
+                <div
+                    onPointerDown={(e) => controls.start(e)}
+                    style={{ touchAction: "none" }}
+                    className="absolute right-2 top-2 sm:right-auto sm:-left-3 sm:top-1/2 sm:-translate-y-1/2 w-8 h-8 sm:w-6 sm:h-10 flex items-center justify-center cursor-grab active:cursor-grabbing text-gray-400 dark:text-white/30 hover:text-purple-500 transition bg-white/80 dark:bg-[#11001F]/80 sm:bg-transparent rounded-lg sm:rounded-none shadow-sm sm:shadow-none z-10 border border-gray-200 dark:border-white/10 sm:border-transparent backdrop-blur-sm sm:backdrop-blur-none"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </div>
+            )}
+
+            {/* Preview image */}
+            <div
+                className="w-full sm:w-28 h-20 bg-cover bg-center rounded-lg border border-gray-200 dark:border-white/10 shrink-0 bg-gray-200 dark:bg-slate-800"
+                style={{ backgroundImage: `url('${cleanImagePath(project.image) || '/assets/work-1.png'}')` }}
+            />
+
+            <div className="flex-grow flex flex-col justify-between min-w-0">
+                <div className="min-w-0 pr-10 sm:pr-0">
+                    <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-gray-800 dark:text-white text-base tracking-wide truncate">{project.title}</h3>
+                        {project.isPinned && (
+                            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                                📌 Pinned
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-xs text-gray-600 dark:text-white/60 mt-1 line-clamp-2 leading-relaxed">{project.description}</p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                        {project.techStack.map((tech, i) => (
+                            <span key={i} className="px-1.5 py-0.5 bg-gray-200/80 dark:bg-white/10 text-slate-700 dark:text-white/80 rounded text-[9px] font-medium">
+                                {tech}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="flex gap-4 mt-4 pt-3 border-t border-gray-200/50 dark:border-white/5 items-center justify-between">
+                    <motion.button
+                        whileTap={{ scale: 0.85 }}
+                        onClick={() => handleTogglePin(project)}
+                        title={project.isPinned ? 'Unpin project' : 'Pin to top'}
+                        className={`flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all duration-200 ${
+                            project.isPinned
+                                ? 'bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-500/25'
+                                : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-white/40 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:text-amber-500'
+                        }`}
+                    >
+                        <span className={project.isPinned ? 'text-amber-500' : ''}>📌</span>
+                        {project.isPinned ? 'Unpin' : 'Pin'}
+                    </motion.button>
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => handleEdit(project)}
+                            className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-semibold transition"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onClick={() => setDeleteConfirmId(project._id)}
+                            className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-semibold transition"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Reorder.Item>
+    );
+};
+
 export default function AdminDashboard() {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(false);
     const [toasts, setToasts] = useState([]);
     const [isDark, setIsDark] = useState(false);
+    
+    // Resume State
+    const [resumeData, setResumeData] = useState(null);
+    const [resumeUploading, setResumeUploading] = useState(false);
+    const [resumeFile, setResumeFile] = useState(null);
     
     // Search State
     const [searchQuery, setSearchQuery] = useState('');
@@ -158,9 +255,16 @@ export default function AdminDashboard() {
                 // Verify Token
                 await axios.get('/api/auth/verify');
                 
-                // Fetch projects
-                const response = await axios.get('/api/projects');
-                setProjects(response.data);
+                // Fetch projects and resume concurrently
+                const [projectsRes, resumeRes] = await Promise.all([
+                    axios.get('/api/projects'),
+                    axios.get('/api/resume/latest').catch(() => ({ data: null }))
+                ]);
+                
+                setProjects(projectsRes.data);
+                if (resumeRes.data) {
+                    setResumeData(resumeRes.data);
+                }
             } catch (err) {
                 console.error('Session verification or fetch failed:', err);
                 localStorage.removeItem('adminToken');
@@ -352,6 +456,57 @@ export default function AdminDashboard() {
         }
     };
 
+    // Handle reordering array via drag and drop
+    const handleReorder = async (newOrder) => {
+        setProjects(newOrder); // Optimistic UI update
+        try {
+            const orderPayload = newOrder.map((p, index) => ({ _id: p._id, order: index }));
+            await axios.patch('/api/projects/reorder', { projects: orderPayload });
+        } catch (err) {
+            console.error('Reorder error:', err);
+            showToast('Failed to save project order.', 'error');
+        }
+    };
+
+    // Handle Resume Upload
+    const handleResumeUpload = async (e) => {
+        e.preventDefault();
+        if (!resumeFile) {
+            showToast('Please select a PDF or Word document first.', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('resume', resumeFile);
+
+        setResumeUploading(true);
+        try {
+            const res = await axios.post('/api/resume/upload', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setResumeData(res.data.resume);
+            setResumeFile(null);
+            showToast('Resume uploaded to Cloudinary successfully!', 'success');
+        } catch (err) {
+            console.error('Resume upload error:', err);
+            showToast(err.response?.data?.message || 'Failed to upload resume.', 'error');
+        } finally {
+            setResumeUploading(false);
+        }
+    };
+
+    // Handle Delete Resume
+    const handleDeleteResume = async () => {
+        try {
+            await axios.delete('/api/resume/delete');
+            setResumeData(null);
+            showToast('Resume deleted successfully!', 'success');
+        } catch (err) {
+            console.error('Delete resume error:', err);
+            showToast('Failed to delete resume.', 'error');
+        }
+    };
+
     // Handle Delete confirmed action
     const handleDeleteConfirm = async () => {
         const id = deleteConfirmId;
@@ -412,9 +567,74 @@ export default function AdminDashboard() {
 
     if (loading) {
         return (
-            <div className="min-h-screen w-full flex flex-col items-center justify-center bg-rose-50/30 dark:bg-darkTheme font-Ovo transition-colors duration-300">
-                <div className="w-12 h-12 rounded-full border-4 border-purple-500/20 border-t-purple-500 animate-spin mb-4" />
-                <p className="text-gray-600 dark:text-white/60 text-sm tracking-widest font-Outfit animate-pulse">VERIFYING ADMIN CONSOLE...</p>
+            <div className="min-h-screen bg-gray-50 dark:bg-[#0c0018] text-gray-800 dark:text-white font-Ovo transition-colors duration-300">
+                {/* Navbar Skeleton */}
+                <nav className="w-full px-[8%] py-4 flex items-center justify-between border-b border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/20 backdrop-blur-md sticky top-0 z-50">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gray-300 dark:bg-white/10 rounded-full animate-pulse" />
+                        <div className="w-24 h-5 bg-gray-300 dark:bg-white/10 rounded animate-pulse" />
+                    </div>
+                    <div className="flex gap-4">
+                        <div className="w-8 h-8 bg-gray-300 dark:bg-white/10 rounded-full animate-pulse" />
+                        <div className="w-20 h-8 bg-gray-300 dark:bg-white/10 rounded-full animate-pulse" />
+                    </div>
+                </nav>
+
+                {/* Main Dashboard Skeleton */}
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 relative z-10 overflow-hidden">
+                    {/* Stats Skeleton */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        {Array(3).fill(0).map((_, i) => (
+                            <div key={i} className="bg-white/60 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-5 flex items-center gap-4 animate-pulse">
+                                <div className="w-14 h-14 rounded-xl bg-gray-300 dark:bg-white/10" />
+                                <div className="flex-1 space-y-2">
+                                    <div className="w-24 h-3 bg-gray-300 dark:bg-white/10 rounded" />
+                                    <div className="w-16 h-6 bg-gray-300 dark:bg-white/10 rounded" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        {/* Form Skeleton */}
+                        <div className="lg:col-span-5 flex flex-col gap-8">
+                            <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 h-[200px] animate-pulse">
+                                <div className="w-40 h-6 bg-gray-300 dark:bg-white/10 rounded mb-6" />
+                                <div className="w-full h-10 bg-gray-300 dark:bg-white/10 rounded mb-4" />
+                                <div className="w-full h-10 bg-gray-300 dark:bg-white/10 rounded" />
+                            </div>
+                            <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 h-[500px] animate-pulse">
+                                <div className="w-40 h-6 bg-gray-300 dark:bg-white/10 rounded mb-6" />
+                                <div className="w-full h-10 bg-gray-300 dark:bg-white/10 rounded mb-4" />
+                                <div className="w-full h-24 bg-gray-300 dark:bg-white/10 rounded mb-4" />
+                                <div className="w-full h-10 bg-gray-300 dark:bg-white/10 rounded mb-4" />
+                            </div>
+                        </div>
+
+                        {/* Projects List Skeleton */}
+                        <div className="lg:col-span-7 flex flex-col gap-6">
+                            <div className="flex justify-between items-center mb-2">
+                                <div className="w-32 h-8 bg-gray-300 dark:bg-white/10 rounded animate-pulse" />
+                                <div className="w-48 h-10 bg-gray-300 dark:bg-white/10 rounded-full animate-pulse" />
+                            </div>
+                            <div className="space-y-4">
+                                {Array(4).fill(0).map((_, i) => (
+                                    <div key={i} className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4 flex gap-4 animate-pulse">
+                                        <div className="w-20 h-20 bg-gray-300 dark:bg-white/10 rounded-lg shrink-0" />
+                                        <div className="flex-1 space-y-3 py-2">
+                                            <div className="flex justify-between">
+                                                <div className="w-1/2 h-5 bg-gray-300 dark:bg-white/10 rounded" />
+                                                <div className="w-8 h-8 bg-gray-300 dark:bg-white/10 rounded-full" />
+                                            </div>
+                                            <div className="w-full h-3 bg-gray-300 dark:bg-white/10 rounded" />
+                                            <div className="w-3/4 h-3 bg-gray-300 dark:bg-white/10 rounded" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </main>
             </div>
         );
     }    // Framer Motion Variants for Staggered Stats Load
@@ -549,7 +769,7 @@ export default function AdminDashboard() {
 
                         <button
                             onClick={() => navigate('/')}
-                            className="text-sm text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition font-medium mr-2"
+                            className="text-sm text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition font-medium mr-2 hidden sm:block"
                         >
                             View Portfolio
                         </button>
@@ -619,6 +839,58 @@ export default function AdminDashboard() {
                             transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.15 }}
                             className="lg:col-span-5 flex flex-col gap-8"
                         >
+                            {/* Resume Management Section */}
+                            <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-md transition-colors duration-300">
+                                <h2 className="text-xl font-semibold font-Outfit mb-4 text-[#da7d20] dark:text-amber-400">
+                                    📄 Resume Management
+                                </h2>
+                                
+                                {resumeData && (
+                                    <div className="mb-4 p-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/5 rounded-lg flex justify-between items-center">
+                                        <div className="overflow-hidden pr-4">
+                                            <p className="text-xs font-semibold text-gray-800 dark:text-white truncate">Active Resume</p>
+                                            <p className="text-[10px] text-gray-500 dark:text-white/40 truncate">{resumeData.filename}</p>
+                                        </div>
+                                        <div className="flex items-center gap-3 shrink-0">
+                                            <a 
+                                                href={resumeData.url} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="text-xs text-[#b820e6] dark:text-purple-400 hover:underline font-semibold"
+                                            >
+                                                View File
+                                            </a>
+                                            <button 
+                                                onClick={handleDeleteResume}
+                                                className="text-xs text-red-500 hover:text-red-700 hover:underline font-semibold"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <form onSubmit={handleResumeUpload} className="space-y-4">
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                            onChange={(e) => setResumeFile(e.target.files[0])}
+                                            className="w-full text-xs text-gray-500 dark:text-white/60 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-[#da7d20] hover:file:bg-orange-100 dark:file:bg-[#da7d20]/10 dark:hover:file:bg-[#da7d20]/20 transition cursor-pointer"
+                                        />
+                                    </div>
+                                    <motion.button
+                                        whileHover={{ scale: 1.015 }}
+                                        whileTap={{ scale: 0.985 }}
+                                        type="submit"
+                                        disabled={resumeUploading || !resumeFile}
+                                        className="w-full py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg text-xs font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none transition shadow-sm"
+                                    >
+                                        {resumeUploading ? 'Uploading to Cloudinary...' : 'Upload Latest Resume'}
+                                    </motion.button>
+                                </form>
+                            </div>
+
                             <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-md transition-colors duration-300">
                                 <h2 className="text-xl font-semibold font-Outfit mb-6 text-[#b820e6] dark:text-purple-400">
                                     {editingId ? '⚡ Edit Project Settings' : '✨ Add New Project'}
@@ -947,83 +1219,25 @@ export default function AdminDashboard() {
                                         </p>
                                     </div>
                                 ) : (
-                                    <motion.div layout className="space-y-4 overflow-y-auto max-h-[70vh] pr-1 scrollbar-thin">
+                                    <Reorder.Group
+                                        axis="y"
+                                        values={searchQuery ? filteredProjects : projects}
+                                        onReorder={searchQuery ? () => {} : handleReorder}
+                                        className="space-y-4 overflow-y-auto max-h-[70vh] pr-1 scrollbar-thin"
+                                    >
                                         <AnimatePresence mode="popLayout">
-                                            {filteredProjects.map((project) => (
-                                                <motion.div
+                                            {(searchQuery ? filteredProjects : projects).map((project) => (
+                                                <ProjectReorderItem
                                                     key={project._id}
-                                                    layout
-                                                    initial={{ opacity: 0, y: 15 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95 }}
-                                                    whileHover={{ x: 6, boxShadow: "0 6px 20px rgba(0,0,0,0.03)" }}
-                                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                                    className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl border transition-all duration-300 ${
-                                                        project.isPinned
-                                                            ? 'border-amber-400/50 dark:border-amber-400/30 bg-amber-50/60 dark:bg-amber-500/5 hover:bg-amber-50 dark:hover:bg-amber-500/10'
-                                                            : 'border-gray-200/60 dark:border-white/5 bg-gray-50 dark:bg-[#11001F]/30 hover:bg-[#fcf4ff] dark:hover:bg-[#11001F]/60'
-                                                    }`}
-                                                >
-                                                    {/* Preview image */}
-                                                    <div
-                                                        className="w-full sm:w-28 h-20 bg-cover bg-center rounded-lg border border-gray-200 dark:border-white/10 shrink-0 bg-gray-200 dark:bg-slate-800"
-                                                        style={{ backgroundImage: `url('${cleanImagePath(project.image) || '/assets/work-1.png'}')` }}
-                                                    />
-
-                                                    <div className="flex-grow flex flex-col justify-between min-w-0">
-                                                            <div className="min-w-0">
-                                                            <div className="flex items-center gap-2 mb-1">
-                                                                <h3 className="font-semibold text-gray-800 dark:text-white text-base tracking-wide truncate">{project.title}</h3>
-                                                                {project.isPinned && (
-                                                                    <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-full text-[9px] font-bold uppercase tracking-wider">
-                                                                        📌 Pinned
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                            <p className="text-xs text-gray-600 dark:text-white/60 mt-1 line-clamp-2 leading-relaxed">{project.description}</p>
-                                                            <div className="flex flex-wrap gap-1 mt-2">
-                                                                {project.techStack.map((tech, i) => (
-                                                                    <span key={i} className="px-1.5 py-0.5 bg-gray-200/80 dark:bg-white/10 text-slate-700 dark:text-white/80 rounded text-[9px] font-medium">
-                                                                        {tech}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="flex gap-4 mt-4 pt-3 border-t border-gray-200/50 dark:border-white/5 items-center justify-between">
-                                                            <motion.button
-                                                                whileTap={{ scale: 0.85 }}
-                                                                onClick={() => handleTogglePin(project)}
-                                                                title={project.isPinned ? 'Unpin project' : 'Pin to top'}
-                                                                className={`flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all duration-200 ${
-                                                                    project.isPinned
-                                                                        ? 'bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-500/25'
-                                                                        : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-white/40 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:text-amber-500'
-                                                                }`}
-                                                            >
-                                                                <span className={project.isPinned ? 'text-amber-500' : ''}>📌</span>
-                                                                {project.isPinned ? 'Unpin' : 'Pin'}
-                                                            </motion.button>
-                                                            <div className="flex gap-4">
-                                                                <button
-                                                                    onClick={() => handleEdit(project)}
-                                                                    className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-semibold transition"
-                                                                >
-                                                                    Edit
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => setDeleteConfirmId(project._id)}
-                                                                    className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-semibold transition"
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </motion.div>
+                                                    project={project}
+                                                    searchQuery={searchQuery}
+                                                    handleEdit={handleEdit}
+                                                    setDeleteConfirmId={setDeleteConfirmId}
+                                                    handleTogglePin={handleTogglePin}
+                                                />
                                             ))}
                                         </AnimatePresence>
-                                    </motion.div>
+                                    </Reorder.Group>
                                 )}
                             </div>
                         </motion.div>

@@ -2,7 +2,7 @@ import Project from '../models/Project.js';
 
 export const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find().sort({ isPinned: -1, createdAt: -1 });
+    const projects = await Project.find().sort({ isPinned: -1, order: 1, createdAt: -1 });
     res.json(projects);
   } catch (error) {
     console.error('Error fetching projects:', error);
@@ -93,5 +93,28 @@ export const togglePinProject = async (req, res) => {
   } catch (error) {
     console.error('Error toggling pin:', error);
     res.status(500).json({ message: 'Error toggling pin status' });
+  }
+};
+
+export const reorderProjects = async (req, res) => {
+  const { projects } = req.body;
+  if (!Array.isArray(projects)) {
+    return res.status(400).json({ message: 'Projects array is required' });
+  }
+
+  try {
+    // Perform bulk write for efficiency
+    const bulkOps = projects.map((p) => ({
+      updateOne: {
+        filter: { _id: p._id },
+        update: { order: p.order }
+      }
+    }));
+
+    await Project.bulkWrite(bulkOps);
+    res.json({ message: 'Projects reordered successfully' });
+  } catch (error) {
+    console.error('Error reordering projects:', error);
+    res.status(500).json({ message: 'Error updating project order' });
   }
 };

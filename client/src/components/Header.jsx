@@ -1,10 +1,62 @@
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
 import TiltCard from './TiltCard';
 import WordReveal from './WordReveal';
 import Magnetic from './Magnetic';
 import HeaderBackground from './HeaderBackground';
 
 export default function Header() {
+    const [resumeUrl, setResumeUrl] = useState("./assets/Aman_Sah_Resume.pdf"); // Fallback
+    const [resumeName, setResumeName] = useState("Aman_Sah_Resume.pdf");
+    const [toastMsg, setToastMsg] = useState("");
+    const [toastType, setToastType] = useState("info");
+
+    useEffect(() => {
+        // Fetch the latest resume link dynamically
+        axios.get('/api/resume/latest')
+            .then(res => {
+                if (res.data && res.data.url) {
+                    setResumeUrl(res.data.url);
+                    if (res.data.originalName) {
+                        setResumeName(res.data.originalName);
+                    }
+                }
+            })
+            .catch(err => console.error("Failed to fetch resume URL", err));
+    }, []);
+
+    const handleDownload = async (e) => {
+        e.preventDefault();
+        setToastMsg("Downloading Resume...");
+        setToastType("info");
+        
+        try {
+            // Fetch as blob to force a download with the specific filename
+            const response = await fetch(resumeUrl);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = resumeName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            
+            setToastMsg("Resume Downloaded Successfully! 🎉");
+            setToastType("success");
+        } catch (err) {
+            console.error("Download failed, opening in new tab", err);
+            // Fallback to opening in new tab if blob fetch fails due to CORS or other issues
+            window.open(resumeUrl, '_blank');
+            setToastMsg("Opened in new tab.");
+            setToastType("info");
+        }
+        
+        setTimeout(() => setToastMsg(""), 3500);
+    };
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -31,13 +83,14 @@ export default function Header() {
     };
 
     return (
-        <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            style={{ perspective: 1200 }}
-            className="relative w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4 pt-20"
-        >
+        <>
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                style={{ perspective: 1200 }}
+                className="relative w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4 pt-20"
+            >
             {/* Interactive Modern Background Animation */}
             <HeaderBackground />
 
@@ -90,13 +143,31 @@ export default function Header() {
                 </Magnetic>
 
                 <Magnetic range={0.2}>
-                    <a href="./assets/Aman_Sah_Resume.pdf" download="Aman_Sah_Resume.pdf"
+                    <button onClick={handleDownload}
                         className="px-10 py-2.5 rounded-full border border-gray-300 dark:border-white/25 hover:bg-slate-100/70 dark:hover:bg-darkHover flex items-center gap-2 bg-white dark:bg-transparent dark:text-white hover:scale-105 transition-all duration-300">
                         My Resume <img src="./assets/download-icon.png" alt="" className="w-4 dark:invert" />
-                    </a>
+                    </button>
                 </Magnetic>
             </motion.div>
-
         </motion.div>
+
+        {/* Custom Toast Alert */}
+        <AnimatePresence>
+            {toastMsg && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className={`fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-lg border text-sm font-semibold font-Outfit backdrop-blur-md ${
+                        toastType === 'success' 
+                            ? 'bg-green-500/10 border-green-500/20 text-green-700 dark:text-green-400' 
+                            : 'bg-white/80 dark:bg-[#11001F]/80 border-gray-200 dark:border-[#b820e6]/20 text-gray-800 dark:text-white'
+                    }`}
+                >
+                    {toastMsg}
+                </motion.div>
+            )}
+        </AnimatePresence>
+        </>
     )
 }

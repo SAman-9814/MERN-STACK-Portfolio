@@ -9,6 +9,7 @@ import projectRoutes from './routes/projectRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import resumeRoutes from './routes/resumeRoutes.js';
 import { uploadDir } from './middlewares/upload.js';
 
 const app = express();
@@ -61,6 +62,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/contact', contactLimiter, contactRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/resume', resumeRoutes);
 
 // Default Route
 app.get("/", (req, res) => {
