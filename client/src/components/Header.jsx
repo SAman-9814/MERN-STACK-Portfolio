@@ -97,7 +97,7 @@ export default function Header() {
             {/* Avatar image wrapped in 3D TiltCard */}
             <motion.div variants={itemVariants} className="w-32 h-32 mb-2 group relative">
                 <TiltCard className="rounded-full" glowColor="rgba(184, 32, 230, 0.4)">
-                    <img src="./assets/a.jpg" alt="Aman Sah" className="rounded-full w-32 aspect-square object-cover ring-4 ring-[#b820e6]/30 shadow-xl" />
+                    <img src="./assets/about.png" alt="Aman Sah" className="rounded-full w-32 aspect-square object-cover ring-4 ring-[#b820e6]/30 shadow-xl" />
                 </TiltCard>
                 
                 {/* Green Online status dot */}

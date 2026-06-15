@@ -63,7 +63,7 @@ export default function About() {
                         {/* Gradient animated border wrapper */}
                         <TiltCard className="rounded-[1.5rem]" glowColor="rgba(184, 32, 230, 0.3)">
                             <div className="gradient-img-border shadow-[0_8px_40px_rgba(184,32,230,0.3)]">
-                                <img src='./assets/about.jpg' alt="Aman Sah" className="w-64 sm:w-80 h-[320px] sm:h-[400px] max-w-none object-cover" />
+                                <img src='./assets/about.png' alt="Aman Sah" className="w-64 sm:w-80 h-[320px] sm:h-[400px] max-w-none object-cover" />
                             </div>
                         </TiltCard>
                     </div>
